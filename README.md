@@ -2,6 +2,10 @@
 
 Using the DART realtime API, the app allows the user to select their station & direction. Using this, it checks for trains arriving soon and schedules a system notification on their device to alert them appropriately.
 
+![](docs/app-main-page.png "Main view of the app")
+![](docs/system-notifications.png "System notifications")
+
+
 ## User interaction & hard-coded values
 
 The only user selectable values are the station (which defaults to Blackrock) and direction.
