@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Railminder.Views.MainPage"
+             Padding="20">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style TargetType="Picker">
+                <Setter Property="WidthRequest" Value="150" />
+                <Setter Property="HeightRequest" Value="50" />
+                <Setter Property="HorizontalOptions" Value="Start" />
+                <Setter Property="VerticalOptions" Value="Center" />
+            </Style>
+            <Style x:Key="PickerLabel" TargetType="Label">
+                <Setter Property="VerticalOptions" Value="Center" />
+                <Setter Property="HorizontalTextAlignment" Value="End" />
+                <Setter Property="HorizontalOptions" Value="End" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <StackLayout>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="2*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Label Style="{StaticResource PickerLabel}" Grid.Row="0" Grid.Column="0" Text="Station" />
+            <Picker Grid.Row="0" Grid.Column="1" ItemsSource="{Binding StationNames}"
+                    SelectedIndex="{Binding SelectedStation}" />
+
+            <Label Style="{StaticResource PickerLabel}" Grid.Row="1" Grid.Column="0" Text="Direction" />
+            <Picker Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Directions}"
+                    SelectedIndex="{Binding SelectedDirection}" />
+
+            <Button Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Text="Check for trains" Clicked="Check_OnClicked" />
+        </Grid>
+        
+        <Label Text="{Binding CheckResult}"/>
+    </StackLayout>
+
+
+</ContentPage>
