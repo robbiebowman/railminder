@@ -22,6 +22,7 @@ namespace Railminder.ViewModels
         private readonly NotificationService _notificationService;
         private Position _position;
         private string _checkResult;
+        private List<TrainInfo> _upcomingTrains;
 
         public MainPageViewModel()
         {
@@ -65,6 +66,7 @@ namespace Railminder.ViewModels
             {
                 _selectedDirection = value;
                 CheckResult = string.Empty;
+                CheckForUpcomingTrains();
             }
         }
 
@@ -82,7 +84,7 @@ namespace Railminder.ViewModels
         }
 
         public List<string> StationNames =>
-        _stations.Select(s => string.IsNullOrEmpty(s.Alias) ? s.Description : s.Alias).ToList();
+            _stations.Select(s => string.IsNullOrEmpty(s.Alias) ? s.Description : s.Alias).ToList();
 
         private static double GetDistance(double x1, double y1, double x2, double y2)
         {
@@ -97,7 +99,8 @@ namespace Railminder.ViewModels
             return CrossGeolocator.Current.IsGeolocationAvailable;
         }
 
-        private double DistanceFromHere(double latitude, double longitude) {
+        private double DistanceFromHere(double latitude, double longitude)
+        {
             double distance = GetDistance(longitude, latitude, _position.Longitude, _position.Latitude);
             return distance;
         }
@@ -110,7 +113,6 @@ namespace Railminder.ViewModels
 
         public async void CheckForUpcomingTrains()
         {
-            var now = DateTime.Now;
             var station = _stations[_selectedStation];
             var upcomingTrains =
                 await _apiService.GetUpcomngTrains(station, _directions[_selectedDirection]);
@@ -119,22 +121,27 @@ namespace Railminder.ViewModels
                 train.ArrivalTime = _scheduleService.GetArrivalTime(train);
             }
 
-            var viableTrains = upcomingTrains.Where(t =>
-                t.ArrivalTime - now >= Config.TimeToReachStation
-                && t.ArrivalTime - now <= Config.TimeBeforeNotInterestedInTrain).ToList();
+            UpcomingTrains = upcomingTrains.OrderBy(train => train.ArrivalTime).ToList();
+        }
 
-            if (viableTrains.Any())
+        public void ScheduleNotification(TrainInfo train)
+        {
+            _notificationService.ScheduleTrainNotification(train);
+
+            CheckResult =
+                $"Success! Scheduling a notification for the {train.Exparrival} train at {train.Stationfullname} heading {train.Direction}.";
+        }
+
+        public List<TrainInfo> UpcomingTrains
+        {
+            get => _upcomingTrains;
+            set
             {
-                var bestTrain = viableTrains.OrderBy(t => t.ArrivalTime).First();
-                _notificationService.ScheduleTrainNotification(bestTrain);
-
-                CheckResult = $"Success! Scheduling a notification for the {bestTrain.Exparrival} train at {bestTrain.Stationfullname} heading {bestTrain.Direction}.";
-            }
-            else
-            {
-                _notificationService.NotifyNoTrainsAvailable(station);
-
-                CheckResult = $"Can't find any viable trains at {station.Description} heading {_directions[_selectedDirection]}.";
+                if (_upcomingTrains != value)
+                {
+                    _upcomingTrains = value;
+                    OnPropertyChanged();
+                }
             }
         }
 

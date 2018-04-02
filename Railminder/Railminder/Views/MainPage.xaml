@@ -37,11 +37,22 @@
             <Label Style="{StaticResource PickerLabel}" Grid.Row="1" Grid.Column="0" Text="Direction" />
             <Picker Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Directions}"
                     SelectedIndex="{Binding SelectedDirection}" />
-
-            <Button Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Text="Check for trains" Clicked="Check_OnClicked" />
+            
+            <Label Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding CheckResult}"/>
         </Grid>
-        
-        <Label Text="{Binding CheckResult}"/>
+        <ListView ItemsSource="{Binding UpcomingTrains}" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <StackLayout Orientation="Horizontal" Spacing="10">
+                            <Label Text="{Binding ArrivalTime, StringFormat='\{0:hh:mm}'}" VerticalOptions="Center"/>
+                            <Label Text="{Binding Lastlocation}" VerticalOptions="Center"/>
+                            <Button Text="Notify Me" VerticalOptions="Center" Clicked="Button_OnClicked" HorizontalOptions="EndAndExpand"/>
+                        </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
     </StackLayout>
 
 

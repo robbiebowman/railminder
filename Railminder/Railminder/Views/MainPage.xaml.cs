@@ -1,4 +1,5 @@
 ﻿using System;
+using Railminder.Models;
 using Railminder.ViewModels;
 using Xamarin.Forms;
 
@@ -14,10 +15,12 @@ namespace Railminder.Views
 		    BindingContext = mainPageViewModel;
 		}
 
-	    private void Check_OnClicked(object sender, EventArgs e)
+	    private void Button_OnClicked(object sender, EventArgs e)
 	    {
-	        var viewModel = (MainPageViewModel) BindingContext;
-	        viewModel.CheckForUpcomingTrains();
+	        var button = (Button) sender;
+	        var train = (TrainInfo) button.BindingContext;
+	        var viewModel = (MainPageViewModel)BindingContext;
+	        viewModel.ScheduleNotification(train);
         }
 	}
 }
