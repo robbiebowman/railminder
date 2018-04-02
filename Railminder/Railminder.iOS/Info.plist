@@ -50,5 +50,17 @@
 	<string>LaunchScreen</string>
 	<key>CFBundleName</key>
 	<string>Railminder</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This app needs access location when open.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>location</string>
+	</array>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>This app needs access location when in the background.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>This app needs access location when open and in the background.</string>
+	<key>NSLocationUsageDescription</key>
+	<string>We need to find your local stations.</string>
 </dict>
 </plist>

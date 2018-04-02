@@ -5,6 +5,9 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using Railminder.Models;
 using Railminder.Services;
+using Plugin.Geolocator;
+using System.Threading.Tasks;
+using Plugin.Geolocator.Abstractions;
 
 namespace Railminder.ViewModels
 {
@@ -17,6 +20,7 @@ namespace Railminder.ViewModels
         private int _selectedDirection;
         private readonly ScheduleService _scheduleService;
         private readonly NotificationService _notificationService;
+        private Position _position;
         private string _checkResult;
 
         public MainPageViewModel()
@@ -78,8 +82,25 @@ namespace Railminder.ViewModels
         }
 
         public List<string> StationNames =>
-            _stations.Select(s => string.IsNullOrEmpty(s.Alias) ? s.Description : s.Alias).ToList();
+        _stations.Select(s => string.IsNullOrEmpty(s.Alias) ? s.Description : s.Alias).ToList();
 
+        private static double GetDistance(double x1, double y1, double x2, double y2)
+        {
+            return Math.Sqrt(Math.Pow((x2 - x1), 2) + Math.Pow((y2 - y1), 2));
+        }
+
+        public bool IsLocationAvailable()
+        {
+            if (!CrossGeolocator.IsSupported)
+                return false;
+
+            return CrossGeolocator.Current.IsGeolocationAvailable;
+        }
+
+        private double DistanceFromHere(double latitude, double longitude) {
+            double distance = GetDistance(longitude, latitude, _position.Longitude, _position.Latitude);
+            return distance;
+        }
 
         private async void UpdateDirections()
         {
@@ -119,7 +140,10 @@ namespace Railminder.ViewModels
 
         private async void UpdateStations()
         {
-            _stations = await _apiService.GetStations();
+            _position = await CrossGeolocator.Current.GetLastKnownLocationAsync();
+
+            _stations = (await _apiService.GetStations())
+                .OrderBy(s => DistanceFromHere(s.Latitude, s.Longitude)).ToList();
 
             OnPropertyChanged(nameof(StationNames));
 

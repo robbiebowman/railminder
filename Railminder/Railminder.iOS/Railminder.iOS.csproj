@@ -26,6 +26,7 @@
     <MtouchArch>x86_64</MtouchArch>
     <MtouchLink>None</MtouchLink>
     <MtouchDebug>true</MtouchDebug>
+    <CodesignKey>iPhone Developer</CodesignKey>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>none</DebugType>
@@ -124,7 +125,7 @@
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <ItemGroup>
     <ProjectReference Include="..\Railminder\Railminder.csproj">
-      <Project>{7D032A22-D801-41AD-A381-2374E914FD10}</Project>
+      <Project>{4380D2DC-4B03-48BE-8A3A-0B2DD6636995}</Project>
       <Name>Railminder</Name>
     </ProjectReference>
   </ItemGroup>
